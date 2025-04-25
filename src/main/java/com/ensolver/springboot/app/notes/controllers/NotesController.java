@@ -29,7 +29,7 @@ import com.ensolver.springboot.app.notes.repositories.UserRepository;
 import com.ensolver.springboot.app.notes.security.JwtTokenProvider;
 import com.ensolver.springboot.app.notes.service.NoteService;
 
-@CrossOrigin(origins = { "http://127.0.0.1:5502", "http://localhost:5502" })
+@CrossOrigin(origins = { "http://notas-aplicacion-backend.onrender.com" })
 @RestController
 @RequestMapping("/api/notes")
 public class NotesController {

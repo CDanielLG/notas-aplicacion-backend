@@ -47,7 +47,7 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    @CrossOrigin(origins = "http://127.0.0.1:5502", allowCredentials = "true")
+    @CrossOrigin(origins = "https://notas-aplicacion-backend.onrender.com", allowCredentials = "true")
     public ResponseEntity<?> registerUser(@Valid @RequestBody Usuario user, 
                                         BindingResult bindingResult) {
         
@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    @CrossOrigin(origins = "http://127.0.0.1:5502", allowCredentials = "true")
+    @CrossOrigin(origins = "https://notas-aplicacion-backend.onrender.com", allowCredentials = "true")
     public ResponseEntity<Map<String, String>> loginUser(
             @Valid @RequestBody LoginRequest loginRequest) {
 
