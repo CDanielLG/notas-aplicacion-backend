@@ -5,12 +5,14 @@ import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ensolver.springboot.app.notes.entity.Usuario;
 import com.ensolver.springboot.app.notes.repositories.RoleRepository;
 import com.ensolver.springboot.app.notes.repositories.UserRepository;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     @Autowired
