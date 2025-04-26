@@ -72,21 +72,33 @@ public class UserController {
     @CrossOrigin(origins = "https://misnotasweb-98015.web.app", allowCredentials = "true")
     public ResponseEntity<Map<String, String>> loginUser(
             @Valid @RequestBody LoginRequest loginRequest) {
-
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                loginRequest.getEmail(),
-                loginRequest.getPassword()
-            )
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        
-        String jwtToken = securityService.generateJwtToken(authentication);
-        return ResponseEntity.ok(Map.of(
-            "status", "success",
-            "token", jwtToken
-        ));
+                Usuario user = userService.findByEmail(loginRequest.getEmail());
+                if (user == null) {
+                    return ResponseEntity.status(401).body(Map.of("error", "El correo ingresado no está registrado"));
+                }
+            
+                try {
+                    // Paso 2: intentar autenticación
+                    Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword()
+                        )
+                    );
+            
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+            
+                    String jwtToken = securityService.generateJwtToken(authentication);
+            
+                    return ResponseEntity.ok(Map.of(
+                        "status", "success",
+                        "token", jwtToken
+                    ));
+            
+                } catch (Exception e) {
+                    // Si la contraseña está mal
+                    return ResponseEntity.status(401).body(Map.of("error", "Contraseña incorrecta"));
+                }
     }
 
     @GetMapping("/me")
