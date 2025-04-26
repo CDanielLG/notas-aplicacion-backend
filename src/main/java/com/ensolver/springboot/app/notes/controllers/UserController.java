@@ -47,7 +47,7 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    @CrossOrigin(origins = "\"https://misnotasweb-98015.web.app/", allowCredentials = "true")
+    @CrossOrigin(origins = "https://misnotasweb-98015.web.app", allowCredentials = "true")
     public ResponseEntity<?> registerUser(@Valid @RequestBody Usuario user, 
                                         BindingResult bindingResult) {
         
@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    @CrossOrigin(origins = "https://misnotasweb-98015.web.app/", allowCredentials = "true")
+    @CrossOrigin(origins = "https://misnotasweb-98015.web.app", allowCredentials = "true")
     public ResponseEntity<Map<String, String>> loginUser(
             @Valid @RequestBody LoginRequest loginRequest) {
 

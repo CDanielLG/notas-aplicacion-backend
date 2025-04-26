@@ -73,7 +73,7 @@ public class WebSecurityConfig  {
      @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(Arrays.asList( "https://misnotasweb-98015.web.app/")); // Tu origen frontend
+        config.setAllowedOriginPatterns(Arrays.asList( "https://misnotasweb-98015.web.app","https://notas-aplicacion-backend.onrender.com")); // Tu origen frontend
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setExposedHeaders(Arrays.asList(
