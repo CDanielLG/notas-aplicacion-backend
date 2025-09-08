@@ -47,26 +47,41 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    @CrossOrigin(origins = "https://misnotasweb-98015.web.app", allowCredentials = "true")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody Usuario user, 
-                                        BindingResult bindingResult) {
-        
-        // Validación manual
-        userValidator.validate(user, bindingResult);
-        
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            bindingResult.getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage()));
-            return ResponseEntity.badRequest().body(errors);
-        }
+    @CrossOrigin(origins = {
+        "https://misnotasweb-98015.web.app",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "http://localhost:5501",
+        "http://127.0.0.1:5501"
+    
+    })
+    public ResponseEntity<?> registerUser(
+        @Valid @RequestBody UserRegistrationDTO userDto,
+        BindingResult bindingResult) {
+            System.out.println("Recibido DTO: " + userDto.getEmail() + " / " + userDto.getPassword() + " / " + userDto.getPasswordConfirm());
 
-        userService.save(user);
-        return ResponseEntity.ok(Map.of(
-            "message", "Usuario registrado exitosamente",
-            "email", user.getEmail()
-        ));
+    // Validar que password == passwordConfirm
+    if (!userDto.getPassword().equals(userDto.getPasswordConfirm())) {
+        return ResponseEntity.badRequest().body(Map.of("error", "Las contraseñas no coinciden"));
     }
+
+    // Checar si ya existe
+    if (userService.findByEmail(userDto.getEmail()) != null) {
+        return ResponseEntity.badRequest().body(Map.of("error", "El correo ya está registrado"));
+    }
+
+    // Crear la entidad Usuario
+    Usuario user = new Usuario();
+    user.setEmail(userDto.getEmail());
+    user.setPassword(userDto.getPassword()); // se encripta en el service
+
+    userService.save(user);
+
+    return ResponseEntity.ok(Map.of(
+        "message", "Usuario registrado exitosamente",
+        "email", user.getEmail()
+    ));
+}
 
     @PostMapping("/login")
     @CrossOrigin(origins = "https://misnotasweb-98015.web.app", allowCredentials = "true")
