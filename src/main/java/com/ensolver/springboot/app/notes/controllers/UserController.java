@@ -1,125 +1,61 @@
 package com.ensolver.springboot.app.notes.controllers;
 
-import java.util.HashMap;
+import com.ensolver.springboot.app.notes.DTO.UserDTO;
+import com.ensolver.springboot.app.notes.entity.User;
+import com.ensolver.springboot.app.notes.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.ensolver.springboot.app.notes.DTO.LoginRequest;
-import com.ensolver.springboot.app.notes.DTO.LoginResponse;
-import com.ensolver.springboot.app.notes.DTO.UserRegistrationDTO;
-import com.ensolver.springboot.app.notes.entity.Usuario;
-import com.ensolver.springboot.app.notes.service.SecurityService;
-import com.ensolver.springboot.app.notes.service.UserService;
-import com.ensolver.springboot.app.notes.validator.UserValidator;
-
-import jakarta.validation.Valid;
-
-
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/v1/user")
 public class UserController {
-    @Autowired
-    private UserService userService;
 
-    @Autowired
-    private SecurityService securityService;
+    private final UserService userService;
 
-    @Autowired
-    private UserValidator userValidator;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @PostMapping("/register")
-    @CrossOrigin(origins = {
-        "https://misnotasweb-98015.web.app",
-        "http://localhost:5500",
-        "http://127.0.0.1:5500",
-        "http://localhost:5501",
-        "http://127.0.0.1:5501"
-    
-    })
-    public ResponseEntity<?> registerUser(
-        @Valid @RequestBody UserRegistrationDTO userDto,
-        BindingResult bindingResult) {
-            System.out.println("Recibido DTO: " + userDto.getEmail() + " / " + userDto.getPassword() + " / " + userDto.getPasswordConfirm());
-
-    // Validar que password == passwordConfirm
-    if (!userDto.getPassword().equals(userDto.getPasswordConfirm())) {
-        return ResponseEntity.badRequest().body(Map.of("error", "Las contraseñas no coinciden"));
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    // Checar si ya existe
-    if (userService.findByEmail(userDto.getEmail()) != null) {
-        return ResponseEntity.badRequest().body(Map.of("error", "El correo ya está registrado"));
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.findAll());
     }
 
-    // Crear la entidad Usuario
-    Usuario user = new Usuario();
-    user.setEmail(userDto.getEmail());
-    user.setPassword(userDto.getPassword()); // se encripta en el service
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
+        return ResponseEntity.ok(userService.findById(id));
+    }
 
-    userService.save(user);
+    @PostMapping
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) {
+        User savedUser = userService.save(userDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+    }
 
-    return ResponseEntity.ok(Map.of(
-        "message", "Usuario registrado exitosamente",
-        "email", user.getEmail()
-    ));
-}
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Integer id, @Valid @RequestBody UserDTO userDTO) {
+        User updatedUser = userService.update(id, userDTO);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
+        userService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 
     @PostMapping("/login")
-    @CrossOrigin(origins = "https://misnotasweb-98015.web.app", allowCredentials = "true")
-    public ResponseEntity<Map<String, String>> loginUser(
-            @Valid @RequestBody LoginRequest loginRequest) {
-                Usuario user = userService.findByEmail(loginRequest.getEmail());
-                if (user == null) {
-                    return ResponseEntity.status(401).body(Map.of("error", "El correo ingresado no está registrado"));
-                }
-            
-                try {
-                    // Paso 2: intentar autenticación
-                    Authentication authentication = authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(),
-                            loginRequest.getPassword()
-                        )
-                    );
-            
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-            
-                    String jwtToken = securityService.generateJwtToken(authentication);
-            
-                    return ResponseEntity.ok(Map.of(
-                        "status", "success",
-                        "token", jwtToken
-                    ));
-            
-                } catch (Exception e) {
-                    // Si la contraseña está mal
-                    return ResponseEntity.status(401).body(Map.of("error", "Contraseña incorrecta"));
-                }
-    }
-
-    @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser() {
-        return ResponseEntity.ok(
-            securityService.getCurrentUserDetails()
-        );
+    public ResponseEntity<User> login(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String password = credentials.get("password");
+        User user = userService.login(email, password);
+        return ResponseEntity.ok(user);
     }
 }
+
+

@@ -2,31 +2,37 @@ package com.ensolver.springboot.app.notes.entity;
 
 import java.util.Set;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "role")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id")
+    private Integer id_role;
 
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<Usuario> users;
+    private boolean enabled;
 
-    public Long getId() {
-        return id;
+    public Role() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Role(Integer id_role, String name, boolean enabled) {
+        this.id_role = id_role;
+        this.name = name;
+        this.enabled = enabled;
+    }
+
+    public Integer getId_role() {
+        return id_role;
+    }
+
+    public void setId_role(Integer id_role) {
+        this.id_role = id_role;
     }
 
     public String getName() {
@@ -37,11 +43,11 @@ public class Role {
         this.name = name;
     }
 
-    public Set<Usuario> getUsers() {
-        return users;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setUsers(Set<Usuario> users) {
-        this.users = users;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

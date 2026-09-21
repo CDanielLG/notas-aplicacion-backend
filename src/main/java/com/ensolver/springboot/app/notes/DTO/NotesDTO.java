@@ -1,56 +1,33 @@
-package com.ensolver.springboot.app.notes.entity;
+package com.ensolver.springboot.app.notes.DTO;
 
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+public class NotesDTO {
 
-import jakarta.persistence.*;
-import lombok.*;
-
-@Entity
-@Table(name = "notes")
-public class Note {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Title is required")
     private String title;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Content is required")
     private String content;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Category is required")
     private String category;
 
-    @Column(nullable = false)
-    private boolean archived;
+    private boolean archived = false;
 
-    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_notes_user"))
-    @JsonBackReference
-    private User user;
-
-    public Note() {
+    public NotesDTO() {
     }
 
-    public Note(Long id, String title, String content, String category, boolean archived, LocalDateTime createdAt, User user) {
-        this.id = id;
+    public NotesDTO(String title, String content, String category) {
         this.title = title;
         this.content = content;
         this.category = category;
-        this.archived = archived;
-        this.createdAt = createdAt;
-        this.user = user;
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        this.archived = false;
     }
 
     public Long getId() {
@@ -99,13 +76,5 @@ public class Note {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }
