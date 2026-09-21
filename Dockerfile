@@ -1,5 +1,14 @@
-FROM amazoncorretto:17-alpine-jdk
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /app
 
-COPY backend/target/springboot-noteapp-0.0.1-SNAPSHOT.jar app.jar
+COPY pom.xml .
+COPY src ./src
 
-ENTRYPOINT ["java","-jar","/app.jar"]
+RUN mvn clean package -DskipTests
+
+FROM amazoncorretto:21-alpine-jdk
+WORKDIR /app
+
+COPY --from=build /app/target/springboot-noteapp-0.0.1-SNAPSHOT.jar app.jar
+
+ENTRYPOINT ["java","-jar","/app/app.jar"]
