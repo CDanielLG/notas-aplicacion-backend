@@ -15,8 +15,10 @@ com\ensolver\springboot\app\notes\exception\UserDisabledException.class
 com\ensolver\springboot\app\notes\security\JwtUtil.class
 com\ensolver\springboot\app\notes\repo\INoteRepo.class
 com\ensolver\springboot\app\notes\DTO\UserDTO.class
+com\ensolver\springboot\app\notes\controllers\ApiExceptionHandler.class
 com\ensolver\springboot\app\notes\service\NoteService.class
 com\ensolver\springboot\app\notes\entity\Role.class
+com\ensolver\springboot\app\notes\repo\IRoleRepo.class
 com\ensolver\springboot\app\notes\DTO\AuthResponse.class
 com\ensolver\springboot\app\notes\repo\IUserRepo.class
 com\ensolver\springboot\app\notes\security\JwtAuthFilter.class
