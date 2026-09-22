@@ -94,7 +94,15 @@ public class UserService {
     public User login(String email, String password) {
         User user = findByEmailOptional(email)
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+
+        boolean passwordMatches;
+        try {
+            passwordMatches = passwordEncoder.matches(password, user.getPassword());
+        } catch (IllegalArgumentException exception) {
+            throw new BadCredentialsException("Invalid email or password");
+        }
+
+        if (!passwordMatches) {
             throw new BadCredentialsException("Invalid email or password");
         }
         if (!user.isEnabled()) {
