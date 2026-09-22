@@ -22,13 +22,13 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
-    private final String allowedOrigins;
+    private final String allowedOriginPatterns;
 
     public SecurityConfig(
             JwtAuthFilter jwtAuthFilter,
-            @Value("${app.cors.allowed-origins}") String allowedOrigins) {
+            @Value("${app.cors.allowed-origin-patterns}") String allowedOriginPatterns) {
         this.jwtAuthFilter = jwtAuthFilter;
-        this.allowedOrigins = allowedOrigins;
+        this.allowedOriginPatterns = allowedOriginPatterns;
     }
 
     @Bean
@@ -39,12 +39,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        List<String> origins = Arrays.stream(allowedOrigins.split(","))
+        List<String> originPatterns = Arrays.stream(allowedOriginPatterns.split(","))
                 .map(String::trim)
                 .filter(origin -> !origin.isEmpty())
                 .toList();
 
-        configuration.setAllowedOrigins(origins);
+        configuration.setAllowedOriginPatterns(originPatterns);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
