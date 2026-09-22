@@ -63,8 +63,12 @@ public class UserService {
             throw new RegistrationException("Email already registered");
         }
         Role defaultRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new IllegalStateException(
-                        "Default role USER does not exist"));
+                .orElseGet(() -> {
+                    Role role = new Role();
+                    role.setName("ROLE_USER");
+                    role.setEnabled(true);
+                    return roleRepository.save(role);
+                });
         User user = new User();
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));

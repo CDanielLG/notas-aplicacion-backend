@@ -1,3 +1,4 @@
+com\ensolver\springboot\app\notes\security\NoteCryptoService.class
 com\ensolver\springboot\app\notes\exception\RegistrationException.class
 com\ensolver\springboot\app\notes\controllers\AuthController.class
 com\ensolver\springboot\app\notes\security\SecurityConfig.class
