@@ -1,6 +1,7 @@
 package com.ensolver.springboot.app.notes.entity;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -51,7 +52,7 @@ public class Note {
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now(ZoneOffset.UTC);
     }
 
     public Long getId() {

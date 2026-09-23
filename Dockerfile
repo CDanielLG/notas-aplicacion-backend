@@ -12,5 +12,8 @@ WORKDIR /app
 COPY --from=build /app/target/springboot-noteapp-0.0.1-SNAPSHOT.jar app.jar
 
 ENV SPRING_PROFILES_ACTIVE=prod
+ENV APP_TIME_ZONE=UTC
+ENV TZ=UTC
+ENV JAVA_TOOL_OPTIONS="-Duser.timezone=UTC"
 
 ENTRYPOINT ["java","-jar","/app/app.jar"]

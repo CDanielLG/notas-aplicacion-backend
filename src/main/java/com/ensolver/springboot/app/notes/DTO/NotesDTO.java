@@ -1,7 +1,7 @@
 package com.ensolver.springboot.app.notes.DTO;
 
 import jakarta.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public class NotesDTO {
 
@@ -18,7 +18,7 @@ public class NotesDTO {
 
     private boolean archived = false;
 
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     public NotesDTO() {
     }
@@ -70,11 +70,11 @@ public class NotesDTO {
         this.archived = archived;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 }

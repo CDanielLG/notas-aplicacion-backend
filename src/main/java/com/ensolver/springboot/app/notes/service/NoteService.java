@@ -8,6 +8,7 @@ import com.ensolver.springboot.app.notes.security.NoteCryptoService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,7 +74,7 @@ public class NoteService {
         notesDTO.setContent(noteCryptoService.decrypt(note.getContent()));
         notesDTO.setCategory(note.getCategory());
         notesDTO.setArchived(note.isArchived());
-        notesDTO.setCreatedAt(note.getCreatedAt());
+        notesDTO.setCreatedAt(note.getCreatedAt().toInstant(ZoneOffset.UTC));
         return notesDTO;
     }
 
